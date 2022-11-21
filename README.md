@@ -4,7 +4,7 @@
 
 ## requirements
 - Python 3.10
-- pytest `pip install -U pytest`
+- pytest `pip install -U pytest` or `pip install -r requirements.txt`
 
 ## getting started
 
@@ -15,5 +15,6 @@ python3 src/mandelview.py
 
 run the tests using
 ```
-pytest test
+cd src
+pytest
 ```
