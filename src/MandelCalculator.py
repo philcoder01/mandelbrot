@@ -17,7 +17,7 @@ class MandelCalculator:
         i = 0
         # z1 = z0**2 + c
         # z2 = z1**2 + c
-        while((i <= self.max_iterations) or (abs(zn) < self.infinity_limit)):
+        while((i < self.max_iterations) and (abs(zn) < self.infinity_limit)):
             zn = zn**2 + c
             i = i + 1
         return i
