@@ -1,4 +1,4 @@
-from PpmGenerator import PPM
+from PpmGenerator import PPM, StringPPMConsumer, ConsolePPMConsumer
 import pytest
 
 def test_generate_a_1_by_1_default_pixel_file() :
@@ -6,7 +6,9 @@ def test_generate_a_1_by_1_default_pixel_file() :
     ppm = PPM(1, 1)
     
     # WHEN we generate the Image
-    img = ppm.getImg()
+    consumer = StringPPMConsumer()
+    ppm.getImg(ConsolePPMConsumer(consumer))
+    img = consumer.getContent()
     
     
     # THEN we expect the following valid ppm file
@@ -19,7 +21,9 @@ def test_generate_a_2_by_2_default_pixel_file() :
     ppm = PPM(2, 2)
     
     # WHEN we generate the Image
-    img = ppm.getImg()
+    consumer = StringPPMConsumer()
+    ppm.getImg(consumer)
+    img = consumer.getContent()
     
     
     # THEN we expect the following valid ppm file
@@ -39,7 +43,9 @@ def test_generate_a_2_by_2__pixel_file_with_black_and_white_pixels() :
     ppm.setPixel(1, 2, 255, 255, 255)
     
     # AND generate the Image
-    img = ppm.getImg()
+    consumer = StringPPMConsumer()
+    ppm.getImg(consumer)
+    img = consumer.getContent()
     
     
     # THEN we expect the following valid ppm file

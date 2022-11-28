@@ -1,3 +1,41 @@
+from typing import TextIO
+
+#Abstract class
+class PPMConsumer:
+    def write(content: str):
+        raise NotImplementedError()
+
+# actually saving into a file
+class FilePPMConsumer(PPMConsumer):
+    def __init__(self, path: str):
+        self.file : TextIO = open(path, "w")
+
+    def write(self, content: str):
+        self.file.write(content)
+
+    def close(self):
+        self.file.close()
+
+# test-implementation that offers content as string
+class StringPPMConsumer(PPMConsumer):
+    def __init__(self):
+        self.content = ""
+
+    def write(self, content: str):
+        self.content += content
+
+    def getContent(self)-> str:
+        return self.content
+
+# console print implementation
+class ConsolePPMConsumer(PPMConsumer):
+    def __init__(self, additionConsumer: PPMConsumer) -> None:
+        self.addConsumer = additionConsumer
+        
+    def write(self, content: str):
+        self.addConsumer.write(content)
+        print(content)
+
 class PPM :
     def __init__(self, height, width) -> None:
         self.height = height
@@ -11,23 +49,28 @@ class PPM :
             self.colorArray[x-1][y-1] = ColorCode(r, g, b)
         except IndexError:
             raise IndexError("Pixel ({}, {}) not in range (1-{}, 1-{})".format(x, y, self.width, self.height))
+
+
+    def getImg(self, file1: PPMConsumer):        
+        self.createHeader(file1) 
+        file1.write("\n")
+        self.createPixels(file1)
+        # Closing file
+
+ 
+    def createHeader(self, file : PPMConsumer):
+        file.write("P3 {} {} 255".format(self.width, self.height))
+
     
-    def getImg(self) -> str:
-        return self.createHeader() + "\n" + self.createPixels()
-    
-    def createHeader(self):
-        return "P3 {} {} 255".format(self.width, self.height)
-    
-    def createPixels(self):
+    def createPixels(self, file : PPMConsumer):
         output = ""
         for row in range(self.height):
             for col in range(self.width):
                 currentPixelColor = self.colorArray[col][row]
                 if (currentPixelColor is None) :
-                    output += "0 0 0\n"
+                   file.write("0 0 0\n")
                 else :
-                    output += "{} {} {}\n".format(currentPixelColor.r, currentPixelColor.g, currentPixelColor.b)
-        return output
+                    file.write("{} {} {}\n".format(currentPixelColor.r, currentPixelColor.g, currentPixelColor.b))
     
 class ColorCode:
     def __init__(self, r, g, b) -> None:
